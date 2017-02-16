@@ -11,9 +11,9 @@
                 'RBLAS%': '<!(<(R_HOME%)/bin/R CMD config BLAS_LIBS | sed "s/-I\///")',
                 'RLAPACK%': '<!(<(R_HOME%)/bin/R CMD config LAPACK_LIBS | sed "s/-I\///")',
                 'RINSIDEINCL%': '<!(<(R_HOME%)/bin/R --vanilla --slave -e "RInside:::CxxFlags()" | sed "s/-I\///")',
-                'RINSIDELIBS%': '<!(<(R_HOME%)/bin/R --vanilla --slave -e "Rcpp:::LdFlags()" | sed "s/-I\///")',
+                'RINSIDELIBS%': '<!(<(R_HOME%)/bin/R --vanilla --slave -e "RInside:::LdFlags()")',
                 'RCPPINCL%': '<!(<(R_HOME%)/bin/R --vanilla --slave -e "Rcpp:::CxxFlags()" | sed "s/-I\///")',
-                'RCPPLIBS%': '<!(<(R_HOME%)/bin/R --vanilla --slave -e "Rcpp:::LdFlags()" | sed "s/-I\///")',
+                'RCPPLIBS%': '<!(<(R_HOME%)/bin/R --vanilla --slave -e "Rcpp:::LdFlags()")',
             },
             "link_settings":
             {
@@ -28,6 +28,9 @@
                     '<(RLAPACK)',
                 ],
             },
+            "defines": [
+                'RINSIDE_CALLBACKS',
+            ],
             'include_dirs': [
                 "<!(node -e \"require('nan')\")",
                 '/<(RINSIDEINCL)',
@@ -41,7 +44,7 @@
             'conditions': [
                 ['OS!="win"', {
                     "defines": [
-                        'RINSIDE_CALLBACKS',
+                        # 'RINSIDE_CALLBACKS',
                     ],
                     'cflags+': ["-std=c++11"],
                     'cflags_c': ["-std=c++11"],
@@ -51,7 +54,7 @@
                     'xcode_settings': {
                         "MACOSX_DEPLOYMENT_TARGET": "10.7",
                         "defines": [
-                            'RINSIDE_CALLBACKS'
+                            # 'RINSIDE_CALLBACKS'
                         ],
                         "OTHER_CPLUSPLUSFLAGS": [
                             "-stdlib=libc++",
