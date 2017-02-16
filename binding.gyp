@@ -1,51 +1,70 @@
 {
-  "targets": [
-    {
-      "target_name": "R",
-      "sources": [ "src/rl.cpp",
-                   "src/rlink.cpp"],
-      "variables": {
-              'R_HOME%' : '<!(R RHOME)',
-              'RCPPFLAGS%' : '<!(<(R_HOME%)/bin/R CMD config --cppflags | sed "s/^...//")',
-              'RLDFLAGS%' : '<!(<(R_HOME%)/bin/R CMD config --ldflags)',
-              'RBLAS%' : '<!(<(R_HOME%)/bin/R CMD config BLAS_LIBS)',
-              'RLAPACK%' : '<!(<(R_HOME%)/bin/R CMD config LAPACK_LIBS)',
-              'RINSIDEINCL%' : '<!(echo "RInside:::CxxFlags()" | <(R_HOME%)/bin/R --vanilla --slave | sed "s/^...//")',
-              'RINSIDELIBS%' : '<!(echo "RInside:::LdFlags()" | <(R_HOME%)/bin/R --vanilla --slave)',
-              'RCPPINCL%' : '<!(echo "Rcpp:::CxxFlags()" | <(R_HOME%)/bin/R --vanilla --slave | sed "s/^...//")',
-              'RCPPLIBS%' : '<!(echo "Rcpp:::LdFlags()" | <(R_HOME%)/bin/R --vanilla --slave)',
-              },
-      "link_settings":
-            {
-              'ldflags': ['<(RLDFLAGS)'],
-              'libraries': ['<(RLDFLAGS)',
-                            '<(RINSIDELIBS)',
-                            '<(RCPPLIBS)',
-                            '<(RBLAS)',
-                            '<(RLAPACK)',
-                            ]
+    "targets": [
+        {
+            "target_name": "R",
+            "sources": ["src/rl.cpp",
+                        "src/rlink.cpp"],
+            "variables": {
+                'R_HOME%': '<!(R RHOME)',
+                'RCPPFLAGS%': '<!(<(R_HOME%)/bin/R CMD config --cppflags | sed "s/-I\///")',
+                'RLDFLAGS%': '<!(<(R_HOME%)/bin/R CMD config --ldflags | sed "s/-I\///")',
+                'RBLAS%': '<!(<(R_HOME%)/bin/R CMD config BLAS_LIBS | sed "s/-I\///")',
+                'RLAPACK%': '<!(<(R_HOME%)/bin/R CMD config LAPACK_LIBS | sed "s/-I\///")',
+                'RINSIDEINCL%': '<!(<(R_HOME%)/bin/R --vanilla --slave -e "RInside:::CxxFlags()" | sed "s/-I\///")',
+                'RINSIDELIBS%': '<!(<(R_HOME%)/bin/R --vanilla --slave -e "Rcpp:::LdFlags()" | sed "s/-I\///")',
+                'RCPPINCL%': '<!(<(R_HOME%)/bin/R --vanilla --slave -e "Rcpp:::CxxFlags()" | sed "s/-I\///")',
+                'RCPPLIBS%': '<!(<(R_HOME%)/bin/R --vanilla --slave -e "Rcpp:::LdFlags()" | sed "s/-I\///")',
             },
-          'include_dirs': [
-              "<!(node -e \"require('nan')\")",
-              '/<(RINSIDEINCL)',
-              '/<(RCPPINCL)',
-              '/<(RCPPFLAGS)',
-                          ],
-
-          'cflags_cc!': ['-fno-rtti','-fno-exceptions'],
-          'cflags_cc+': ['-frtti','-fno-exceptions'],
-          'conditions': [
-            ['OS=="mac"', {
-              'xcode_settings': {
-                "MACOSX_DEPLOYMENT_TARGET": "10.7",
-                "OTHER_CPLUSPLUSFLAGS": [
-                  "-stdlib=libc++"
+            "link_settings":
+            {
+                'ldflags': [
+                    '<(RLDFLAGS)'
                 ],
-                'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
-                'GCC_ENABLE_CPP_RTTI': 'YES'
-              }
-            }]
-          ]
-          }
-  ]
+                'libraries': [
+                    '<(RLDFLAGS)',
+                    '<(RINSIDELIBS)',
+                    '<(RCPPLIBS)',
+                    '<(RBLAS)',
+                    '<(RLAPACK)',
+                ],
+            },
+            'include_dirs': [
+                "<!(node -e \"require('nan')\")",
+                '/<(RINSIDEINCL)',
+                '/<(RCPPINCL)',
+                '/<(RCPPFLAGS)',
+            ],
+
+            'cflags_cc!': ['-fno-rtti', '-fno-exceptions'],
+            'cflags_cc+': ['-frtti', '-fno-exceptions'],
+            'cflags': ['-std=c++1', '-stdlib=libc++'],
+            'conditions': [
+                ['OS!="win"', {
+                    "defines": [
+                        'RINSIDE_CALLBACKS',
+                    ],
+                    'cflags+': ["-std=c++11"],
+                    'cflags_c': ["-std=c++11"],
+                    'cflags_cc': ["-std=c++11"],
+                }],
+                ['OS=="mac"', {
+                    'xcode_settings': {
+                        "MACOSX_DEPLOYMENT_TARGET": "10.7",
+                        "defines": [
+                            'RINSIDE_CALLBACKS'
+                        ],
+                        "OTHER_CPLUSPLUSFLAGS": [
+                            "-stdlib=libc++",
+                            "-std=c++11"
+                        ],
+                        "OTHER_LDFLAGS": [
+                            "-stdlib=libc++"
+                        ],
+                        'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
+                        'GCC_ENABLE_CPP_RTTI': 'YES'
+                    }
+                }]
+            ]
+        }
+    ]
 }
