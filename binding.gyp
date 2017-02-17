@@ -52,7 +52,7 @@
                 }],
                 ['OS=="mac"', {
                     'xcode_settings': {
-                        "MACOSX_DEPLOYMENT_TARGET": "10.7",
+                        "MACOSX_DEPLOYMENT_TARGET": "10.12",
                         "defines": [
                             # 'RINSIDE_CALLBACKS'
                         ],
