@@ -40,16 +40,8 @@
 
             'cflags_cc!': ['-fno-rtti', '-fno-exceptions'],
             'cflags_cc+': ['-frtti', '-fno-exceptions'],
-            'cflags': ['-std=c++1', '-stdlib=libc++'],
+            #'cflags': ['-std=c++1', '-stdlib=libc++'],
             'conditions': [
-                ['OS!="win"', {
-                    "defines": [
-                        # 'RINSIDE_CALLBACKS',
-                    ],
-                    'cflags+': ["-std=c++11"],
-                    'cflags_c': ["-std=c++11"],
-                    'cflags_cc': ["-std=c++11"],
-                }],
                 ['OS=="mac"', {
                     'xcode_settings': {
                         "MACOSX_DEPLOYMENT_TARGET": "10.12",
