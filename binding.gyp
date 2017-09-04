@@ -29,7 +29,7 @@
                 ],
             },
             "defines": [
-                'RINSIDE_CALLBACKS',
+                # 'RINSIDE_CALLBACKS',
             ],
             'include_dirs': [
                 "<!(node -e \"require('nan')\")",
